@@ -1,0 +1,46 @@
+.login_outLine{
+    color: #f9f9f9;
+    /*width: 100%;*/
+}
+.login_container {
+    width:500px;
+    height: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #023b6a;
+    margin: 0 auto;
+}
+
+.login_heading {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login_label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.login_input[type="email"],
+.login_input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login_button[type="submit"] {
+    width: 100%;
+    padding: 8px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login_button[type="submit"]:hover {
+    background-color: #45a049;
+}
+  
