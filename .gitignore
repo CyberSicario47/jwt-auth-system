@@ -11,9 +11,11 @@ node_modules/
 # Ignore node_modules in the backend directory
 backend/node_modules/
 backend/package-lock.json
+/backend/.env
 
 # Ignore node_modules in the frontend directory
 frontend/node_modules/
 /frontend/package-lock.json
+frontend/.env
 
 
