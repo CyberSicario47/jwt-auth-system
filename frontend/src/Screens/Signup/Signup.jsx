@@ -2,7 +2,11 @@ import  {useEffect, useRef, useState} from 'react';
 import classes from './Signup.module.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faInfoCircle, faTimes} from "@fortawesome/free-solid-svg-icons";
+import instance from "../../api/axios.js";
+import { Link } from 'react-router-dom'
 
+
+const SIGNUP_URL = '/register'
 const Signup = () => {
 
     const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
@@ -28,20 +32,16 @@ const Signup = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
-        userRef.current.focus()
+        console.log(userRef.current?.focus())
     }, [])
 
     useEffect(() => {
         const result = USER_REGEX.test(user)
-        console.log(result)
-        console.log(user)
         setValidUser(result)
     }, [user])
 
     useEffect(() => {
         const result = PASS_REGEX.test(password)
-        console.log(result)
-        console.log(password)
         setValidPassword(result)
 
         const match = password === matchPassword;
@@ -60,18 +60,50 @@ const Signup = () => {
         if (!v1 || !v2) {
             setErrorMessage("Invalid Entry")
             return;
+        }else{
+            try {
+            const response = await instance.post(SIGNUP_URL, JSON.stringify(({user, password})),
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+            );
+
+            console.log(JSON.stringify(response?.data))
+
+            // const accessToken = response?.data?.accessToken;
+            // const roles = response?.data?.roles;
+
+            // setAuth({user, password, roles, accessToken})
+                console.log('Signup submitted');
+                console.log('User:', user);
+                console.log('Password:', password);
+                setSuccess(true)
+        } catch (error) {
+            if (!error?.response) {
+                setErrorMessage('No Server Response')
+            } else if (error.response) {
+                setErrorMessage("Missing username or Password")
+            } else if (error.response?.status === 401) {
+                setErrorMessage("Unauthorized")
+            } else {
+                setErrorMessage("Login Failed")
+            }
+            console.log(error)
+            errorRef.current?.focus();
         }
-        // Add signup logic here
-        console.log('Signup submitted');
-        console.log('User:', user);
-        console.log('Password:', password);
-        setSuccess(true)
+        }
+
+
+
+
+
     };
 
     return (<>{success ? (<section>
                 <h1>Success!</h1>
                 <p>
-                    <a href="#">Sign In</a>
+                    <Link to="/login">LogIn</Link>
                 </p>
             </section>) :
 
@@ -186,7 +218,7 @@ const Signup = () => {
                     </button>
                 </form>
                 <p>Already registered?<br/>
-                    <a href='#'> login </a></p>
+                    <Link to='login'> Login In </Link></p>
             </section>}
         </>
 
