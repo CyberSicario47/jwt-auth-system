@@ -1,8 +1,8 @@
-import {useState, useRef, useEffect, useContext} from 'react';
-import AuthContext from "../../context/AuthProvider.jsx";
+import {useState, useRef, useEffect} from 'react';
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import axios from "../../api/axios"
 import classes from './Login.module.css'; // Import the CSS file for styling
-
+import useAuth from "../../hooks/useAuth.jsx";
 
 const LOGIN_URL = '/auth'
 const Login = () => {
@@ -12,8 +12,11 @@ const Login = () => {
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
-    const {setAuth} = useContext(AuthContext)
+    const {setAuth} = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/"
 
     useEffect(() => {
         userRef.current?.focus()
@@ -24,7 +27,6 @@ const Login = () => {
     }, [user, password])
 
     const handleSubmit = async (e) => {
-        console.log('this is handle submit')
         e.preventDefault()
         try {
             const response = await axios.post(LOGIN_URL, JSON.stringify(({user, password})),
@@ -42,8 +44,7 @@ const Login = () => {
             setAuth({user, password, roles, accessToken})
             setUser('')
             setPassword('')
-            // setSuccess(true)
-
+            navigate(from, {replace: true});
         } catch (error) {
             if (!error?.response) {
                 setErrMsg('No Server Response')
@@ -60,17 +61,7 @@ const Login = () => {
     }
 
     return (
-        <>
-            {success ? (
-                <section>
-
-                    <h1>You are Logged In</h1>
-                    <br/>
-                    <p>
-                        <a href="#">Go to Home</a>
-                    </p>
-                </section>
-            ) : <section>
+         <section>
                 <p ref={errRef} className={errMsg ? "error_message" : "off_screen"} aria-live="assertive">
                     {errMsg}
                 </p>
@@ -104,8 +95,7 @@ const Login = () => {
                     <a href="#">Sign up</a>
                 </span>
                 </p>
-            </section>}
-        </>
+            </section>
 
 
     );
